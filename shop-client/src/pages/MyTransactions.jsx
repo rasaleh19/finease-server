@@ -9,42 +9,41 @@ const MyTransactions = () => {
   const [loading, setLoading] = useState(true);
   const [editTxn, setEditTxn] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+  const [sortBy, setSortBy] = useState("date");
   const navigate = useNavigate();
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || "light";
+    setTheme(storedTheme);
+    document.documentElement.setAttribute("data-theme", storedTheme);
+  }, []);
 
   useEffect(() => {
     async function fetchTxns() {
       if (!user) return setLoading(false);
-
-      console.log("User object:", user);
-      console.log("User ID:", user.id);
-
-      const fetchUrl = `http://localhost:3000/transactions?userId=${user.id}`;
-      console.log("Fetch URL:", fetchUrl);
-
+      let fetchUrl = `http://localhost:3000/transactions?userId=${user.id}`;
+      fetchUrl += `&sortBy=${sortBy}&sortOrder=-1`;
       try {
         const res = await fetch(fetchUrl);
         if (!res.ok) {
-          console.log("Fetch error:", res.status, await res.text());
           setTransactions([]);
           return;
         }
         const data = await res.json();
-        // Always use id, fallback to _id for MongoDB
         const txns = data.map((t) => ({
           ...t,
           id: t.id || t._id?.toString(),
         }));
         setTransactions(txns);
       } catch (err) {
-        console.log("Fetch catch error:", err);
         setTransactions([]);
       } finally {
         setLoading(false);
       }
     }
-
     fetchTxns();
-  }, [user]);
+  }, [user, sortBy]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this transaction?"))
@@ -117,6 +116,20 @@ const MyTransactions = () => {
     <div className="transactions-container max-w-2xl mx-auto p-4 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4 text-gray-800">My Transactions</h2>
 
+      <div className="flex gap-4 mb-4">
+        <label className="flex items-center gap-2">
+          <span>Sort by:</span>
+          <select
+            value={sortBy}
+            onChange={(e) => setSortBy(e.target.value)}
+            className="select select-bordered"
+          >
+            <option value="date">Date (Newest First)</option>
+            <option value="amount">Amount (Highest First)</option>
+          </select>
+        </label>
+      </div>
+
       {loading ? (
         <div className="spinner">Loading...</div>
       ) : (
@@ -147,7 +160,12 @@ const MyTransactions = () => {
 
                 <div className="txn-actions flex gap-2 mt-2">
                   <button
-                    className="btn btn-sm btn-outline"
+                    className={
+                      `btn btn-sm btn-outline` +
+                      (theme === "dark"
+                        ? " text-black border border-white bg-white hover:bg-gray-200"
+                        : "")
+                    }
                     onClick={() => handleEdit(txn)}
                   >
                     Update

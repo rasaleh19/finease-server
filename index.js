@@ -104,8 +104,10 @@ async function run() {
       if (categoryId) query.categoryId = categoryId;
       if (month) query.month = month;
       let sort = {};
-      if (sortBy) sort[sortBy] = parseInt(sortOrder);
-      else sort["createdAt"] = -1;
+      // Only allow sorting by allowed fields
+      if (sortBy === "date") sort["date"] = parseInt(sortOrder);
+      else if (sortBy === "amount") sort["amount"] = parseInt(sortOrder);
+      else sort["createdAt"] = -1; // default: newest first
       const txns = await transactionsCollection
         .find(query)
         .sort(sort)
@@ -113,7 +115,7 @@ async function run() {
       res.send(txns);
     });
 
-    // FIXED: Find transaction by id or _id
+    // Find transaction by id or _id
     app.get("/transactions/:id", async (req, res) => {
       const id = req.params.id;
       let txn = await transactionsCollection.findOne({ id });

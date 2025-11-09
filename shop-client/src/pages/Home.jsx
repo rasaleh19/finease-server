@@ -12,9 +12,24 @@ export default function Home() {
     savings: 0,
   });
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
 
   useEffect(() => {
     AOS.init({ duration: 800 });
+  }, []);
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || "light";
+    setTheme(storedTheme);
+    document.documentElement.setAttribute("data-theme", storedTheme);
+  }, []);
+
+  useEffect(() => {
+    const handleThemeChange = () => {
+      setTheme(localStorage.getItem("theme") || "light");
+    };
+    window.addEventListener("storage", handleThemeChange);
+    return () => window.removeEventListener("storage", handleThemeChange);
   }, []);
 
   useEffect(() => {
@@ -60,19 +75,47 @@ export default function Home() {
           <div className="spinner">Loading...</div>
         ) : (
           <div className="overview-cards grid grid-cols-1 md:grid-cols-4 gap-4">
-            <div className="card income bg-green-100 p-4 rounded-lg shadow">
+            <div
+              className={
+                `card income p-4 rounded-lg shadow` +
+                (theme === "dark"
+                  ? " bg-green-900 text-green-100"
+                  : " bg-green-100 text-green-900")
+              }
+            >
               <h3 className="font-semibold">Income</h3>
               <p className="text-lg">${summary.income}</p>
             </div>
-            <div className="card expense bg-red-100 p-4 rounded-lg shadow">
+            <div
+              className={
+                `card expense p-4 rounded-lg shadow` +
+                (theme === "dark"
+                  ? " bg-red-900 text-red-100"
+                  : " bg-red-100 text-red-900")
+              }
+            >
               <h3 className="font-semibold">Expense</h3>
               <p className="text-lg">${summary.expense}</p>
             </div>
-            <div className="card savings bg-blue-100 p-4 rounded-lg shadow">
+            <div
+              className={
+                `card savings p-4 rounded-lg shadow` +
+                (theme === "dark"
+                  ? " bg-blue-900 text-blue-100"
+                  : " bg-blue-100 text-blue-900")
+              }
+            >
               <h3 className="font-semibold">Savings</h3>
               <p className="text-lg">${summary.savings}</p>
             </div>
-            <div className="card balance bg-yellow-100 p-4 rounded-lg shadow">
+            <div
+              className={
+                `card balance p-4 rounded-lg shadow` +
+                (theme === "dark"
+                  ? " bg-yellow-900 text-yellow-100"
+                  : " bg-yellow-100 text-yellow-900")
+              }
+            >
               <h3 className="font-semibold">Total Balance</h3>
               <p className="text-lg">
                 ${Number(summary.totalBalance).toFixed(2)}

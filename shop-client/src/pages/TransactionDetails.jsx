@@ -9,6 +9,13 @@ const TransactionDetails = () => {
   const [txn, setTxn] = useState(null);
   const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [theme, setTheme] = useState(localStorage.getItem("theme") || "light");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme") || "light";
+    setTheme(storedTheme);
+    document.documentElement.setAttribute("data-theme", storedTheme);
+  }, []);
 
   useEffect(() => {
     if (userLoading) return; // Wait for user context to finish loading
@@ -97,7 +104,12 @@ const TransactionDetails = () => {
         </div>
         <div className="flex justify-center mt-2">
           <button
-            className="btn btn-outline px-8 py-2 rounded"
+            className={
+              `btn btn-outline px-8 py-2 rounded` +
+              (theme === "dark"
+                ? " text-black border-white bg-white hover:bg-gray-200"
+                : "")
+            }
             onClick={() => navigate(-1)}
           >
             Back

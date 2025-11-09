@@ -85,6 +85,13 @@ export default function Navbar() {
             </button>
           </div>
         )}
+        <button
+          className="btn btn-outline"
+          onClick={toggleTheme}
+          aria-label="Toggle light/dark mode"
+        >
+          {theme === "light" ? "🌙 Dark" : "☀️ Light"}
+        </button>
       </div>
     </nav>
   );
