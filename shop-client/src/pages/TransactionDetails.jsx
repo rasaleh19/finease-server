@@ -1,25 +1,31 @@
-import { useEffect, useState } from "react";
-import { useParams } from "react-router-dom";
+import { useEffect, useState, useContext } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { AuthContext } from "../contexts/AuthContext";
 
 const TransactionDetails = () => {
+  const { user, loading: userLoading } = useContext(AuthContext);
   const { id } = useParams();
+  const navigate = useNavigate();
   const [txn, setTxn] = useState(null);
-  const [categoryTotal, setCategoryTotal] = useState(null);
+  const [transactions, setTransactions] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (userLoading) return; // Wait for user context to finish loading
+    if (!user) {
+      navigate("/login");
+      return;
+    }
     async function fetchDetails() {
       try {
         const res = await fetch(`http://localhost:3000/transactions/${id}`);
         const data = await res.json();
         setTxn(data);
-        if (data?.categoryId && data?.userId) {
-          const res2 = await fetch(
-            `http://localhost:3000/category-total/${data.categoryId}/${data.userId}`
-          );
-          const totalData = await res2.json();
-          setCategoryTotal(totalData.total);
-        }
+        const resAll = await fetch(
+          `http://localhost:3000/transactions?userId=${user.id}`
+        );
+        const allData = await resAll.json();
+        setTransactions(allData);
       } catch {
         setTxn(null);
       } finally {
@@ -27,39 +33,66 @@ const TransactionDetails = () => {
       }
     }
     fetchDetails();
-  }, [id]);
+  }, [id, user, userLoading, navigate]);
 
-  if (loading) return <div className="spinner">Loading...</div>;
-  if (!txn) return <div>Transaction not found.</div>;
+  if (userLoading || loading) return <div className="spinner">Loading...</div>;
+  if (!txn)
+    return (
+      <div className="text-center mt-12 text-lg text-gray-600">
+        Transaction not found.
+      </div>
+    );
+
+  const totalInCategory = transactions
+    .filter((t) => t.categoryId === txn.categoryId)
+    .reduce((sum, t) => sum + Number(t.amount), 0);
 
   return (
-    <div className="txn-details-container">
-      <h2>Transaction Details</h2>
-      <div className="txn-details-card">
-        <div>
-          <strong>Type:</strong> {txn.type}
+    <div className="flex items-center justify-center min-h-[70vh] bg-base-100">
+      <div className="bg-white rounded-2xl shadow-lg p-8 w-full max-w-md mx-auto">
+        <h2 className="text-2xl font-bold mb-6 text-center text-gray-900">
+          Transaction Details
+        </h2>
+        <div className="grid grid-cols-1 gap-4 mb-6">
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-700">Type:</span>
+            <span className="text-base text-gray-900">{txn.type}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-700">Description:</span>
+            <span className="text-base text-gray-900">{txn.description}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-700">Category:</span>
+            <span className="text-base text-gray-900">{txn.categoryId}</span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-700">Amount:</span>
+            <span className="text-base text-green-700 font-bold">
+              ${txn.amount}
+            </span>
+          </div>
+          <div className="flex justify-between items-center">
+            <span className="font-semibold text-gray-700">Date:</span>
+            <span className="text-base text-gray-900">{txn.date}</span>
+          </div>
+          <div className="flex justify-between items-center bg-yellow-50 rounded px-2 py-1">
+            <span className="font-semibold text-gray-700">
+              Total Amount in Category:
+            </span>
+            <span className="text-base text-blue-700 font-bold">
+              ${totalInCategory}
+            </span>
+          </div>
         </div>
-        <div>
-          <strong>Description:</strong> {txn.description}
+        <div className="flex justify-center mt-2">
+          <button
+            className="btn btn-outline px-8 py-2 rounded"
+            onClick={() => navigate(-1)}
+          >
+            Back
+          </button>
         </div>
-        <div>
-          <strong>Amount:</strong> ${txn.amount}
-        </div>
-        <div>
-          <strong>Date:</strong> {txn.date}
-        </div>
-        <div>
-          <strong>Category:</strong> {txn.categoryId}
-        </div>
-        <div>
-          <strong>Total Amount in Category:</strong> ${categoryTotal ?? "-"}
-        </div>
-        <button
-          className="btn btn-primary mt-4"
-          onClick={() => alert("Update functionality coming soon!")}
-        >
-          Update
-        </button>
       </div>
     </div>
   );

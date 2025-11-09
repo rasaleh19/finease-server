@@ -55,81 +55,136 @@ const AddTransaction = () => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-4 bg-base-100 rounded shadow mt-4">
-      <h2 className="text-xl font-bold mb-4">Add Transaction</h2>
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit}>
-        <label className="form-control">
-          <span className="label-text">Type</span>
-          <select name="type" className="select select-bordered" required>
-            <option value="Income">Income</option>
-            <option value="Expense">Expense</option>
-            <option value="Savings">Savings</option>
-          </select>
-        </label>
-        <label className="form-control">
-          <span className="label-text">Category</span>
-          <select name="categoryId" className="select select-bordered" required>
-            <option value="">Select Category</option>
-            {categories.map((cat) => (
-              <option key={cat.id} value={cat.id}>
-                {cat.name}
-              </option>
-            ))}
-          </select>
-        </label>
-        <label className="form-control">
-          <span className="label-text">Amount</span>
-          <input
-            name="amount"
-            type="number"
-            className="input input-bordered"
-            required
-          />
-        </label>
-        <label className="form-control">
-          <span className="label-text">Description</span>
-          <input
-            name="description"
-            type="text"
-            className="input input-bordered"
-            required
-          />
-        </label>
-        <label className="form-control">
-          <span className="label-text">Date</span>
-          <input
-            name="date"
-            type="date"
-            className="input input-bordered"
-            required
-          />
-        </label>
-        <label className="form-control">
-          <span className="label-text">User Email</span>
-          <input
-            name="userEmail"
-            type="text"
-            className="input input-bordered"
-            value={user?.email || ""}
-            readOnly
-          />
-        </label>
-        <label className="form-control">
-          <span className="label-text">User Name</span>
-          <input
-            name="userName"
-            type="text"
-            className="input input-bordered"
-            value={user?.displayName || user?.email || ""}
-            readOnly
-          />
-        </label>
-        <button type="submit" className="btn btn-primary" disabled={loading}>
-          {loading ? "Adding..." : "Add Transaction"}
-        </button>
-      </form>
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 p-6">
+      <div className="w-full max-w-md bg-base-100 rounded shadow p-6">
+        <h2 className="text-xl font-bold mb-6 text-center">Add Transaction</h2>
+
+        <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4">
+          {/* TYPE RADIO */}
+          <div className="col-span-3">
+            <label className="block text-sm font-medium mb-2">Type</label>
+            <div className="flex gap-6">
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="type"
+                  value="Income"
+                  className="radio"
+                  required
+                />
+                <span>Income</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="type"
+                  value="Expense"
+                  className="radio"
+                />
+                <span>Expense</span>
+              </label>
+
+              <label className="flex items-center gap-2 cursor-pointer">
+                <input
+                  type="radio"
+                  name="type"
+                  value="Savings"
+                  className="radio"
+                />
+                <span>Savings</span>
+              </label>
+            </div>
+          </div>
+
+          {/* CATEGORY */}
+          <label className="col-span-1 text-sm self-center">Category</label>
+          <div className="col-span-2">
+            <select
+              name="categoryId"
+              className="select select-bordered w-full"
+              required
+            >
+              <option value="">Select Category</option>
+              {categories.map((cat) => (
+                <option key={cat.id} value={cat.id}>
+                  {cat.name}
+                </option>
+              ))}
+            </select>
+          </div>
+
+          {/* AMOUNT */}
+          <label className="col-span-1 text-sm self-center">Amount</label>
+          <div className="col-span-2">
+            <input
+              name="amount"
+              type="number"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          {/* DESCRIPTION */}
+          <label className="col-span-1 text-sm self-center">Description</label>
+          <div className="col-span-2">
+            <input
+              name="description"
+              type="text"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          {/* DATE */}
+          <label className="col-span-1 text-sm self-center">Date</label>
+          <div className="col-span-2">
+            <input
+              name="date"
+              type="date"
+              className="input input-bordered w-full"
+              required
+            />
+          </div>
+
+          {/* USER EMAIL */}
+          <label className="col-span-1 text-sm self-center">User Email</label>
+          <div className="col-span-2">
+            <input
+              name="userEmail"
+              type="text"
+              className="input input-bordered w-full"
+              value={user?.email || ""}
+              readOnly
+            />
+          </div>
+
+          {/* USER NAME */}
+          <label className="col-span-1 text-sm self-center">User Name</label>
+          <div className="col-span-2">
+            <input
+              name="userName"
+              type="text"
+              className="input input-bordered w-full"
+              value={user?.displayName || user?.email || ""}
+              readOnly
+            />
+          </div>
+
+          {/* SUBMIT BUTTON FULL WIDTH */}
+          <div className="col-span-3">
+            <button
+              type="submit"
+              className="btn btn-primary w-full mt-2"
+              disabled={loading}
+            >
+              {loading ? "Adding..." : "Add Transaction"}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
-  );
+  );  
 };
 
 export default AddTransaction;

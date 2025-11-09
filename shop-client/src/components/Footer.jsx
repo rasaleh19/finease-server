@@ -3,19 +3,27 @@ import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 export default function Footer() {
   return (
     <footer className="footer bg-base-200 p-4 flex flex-col md:flex-row justify-between items-center mt-8">
-      <div>
-        <span className="font-semibold">Contact:</span> info@skillswap.com
+      <div className="flex flex-col items-start gap-1 mb-2 md:mb-0">
+        <div className="flex items-center gap-2">
+          <img
+            src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png"
+            alt="FinEase Logo"
+            className="h-6 w-6"
+          />
+          <span className="font-bold text-lg">FinEase</span>
+        </div>
+        <div className="text-sm text-gray-600">Contact: finease@gmail.com</div>
       </div>
       <div className="flex flex-col items-center gap-2 w-full md:w-auto">
         <a href="#" className="link link-hover text-center">
-          Privacy Policy
+          Terms and Conditions
         </a>
         <span className="text-xs text-gray-500 text-center">
-          We respect your privacy and never share your data with third parties.
+          By using FinEase, you agree to our terms and conditions. Please read
+          them carefully before using the website.
         </span>
         <span className="text-xs text-gray-500 text-center">
-          Your information is securely stored and used only for improving your
-          experience.
+          All financial data is handled securely and responsibly.
         </span>
       </div>
       <div className="flex gap-4">

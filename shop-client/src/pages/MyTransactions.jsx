@@ -1,6 +1,7 @@
 import { useEffect, useState, useContext } from "react";
 import { AuthContext } from "../contexts/AuthContext";
 import toast from "react-hot-toast";
+import { useNavigate } from "react-router-dom";
 
 const MyTransactions = () => {
   const { user } = useContext(AuthContext);
@@ -8,6 +9,7 @@ const MyTransactions = () => {
   const [loading, setLoading] = useState(true);
   const [editTxn, setEditTxn] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const navigate = useNavigate();
 
   useEffect(() => {
     async function fetchTxns() {
@@ -118,6 +120,9 @@ const MyTransactions = () => {
                   <strong>Type:</strong> {txn.type}
                 </div>
                 <div className="text-gray-800">
+                  <strong>Description:</strong> {txn.description}
+                </div>
+                <div className="text-gray-800">
                   <strong>Category:</strong> {txn.categoryId}
                 </div>
                 <div className="text-gray-800">
@@ -139,12 +144,12 @@ const MyTransactions = () => {
                   >
                     Delete
                   </button>
-                  <a
+                  <button
                     className="btn btn-sm btn-info"
-                    href={`/transaction/${txn.id}`}
+                    onClick={() => navigate(`/transaction/${txn.id}`)}
                   >
                     View Details
-                  </a>
+                  </button>
                 </div>
               </div>
             ))
@@ -165,6 +170,11 @@ const MyTransactions = () => {
             <h3 className="text-lg font-bold mb-4 text-gray-800">
               Edit Transaction
             </h3>
+            <p className="mb-2 text-sm text-gray-600">
+              You can edit/update these fields: <strong>Type</strong>,{" "}
+              <strong>Description</strong>, <strong>Category</strong>,{" "}
+              <strong>Amount</strong>, <strong>Date</strong>
+            </p>
             <form
               onSubmit={handleUpdate}
               className="edit-form grid grid-cols-1 gap-4"
@@ -183,6 +193,15 @@ const MyTransactions = () => {
                 </select>
               </label>
               <label className="text-gray-700 flex flex-col">
+                Description:
+                <input
+                  name="description"
+                  defaultValue={editTxn.description}
+                  required
+                  className="input input-bordered w-full"
+                />
+              </label>
+              <label className="text-gray-700 flex flex-col">
                 Category:
                 <input
                   name="categoryId"
@@ -197,15 +216,6 @@ const MyTransactions = () => {
                   name="amount"
                   type="number"
                   defaultValue={editTxn.amount}
-                  required
-                  className="input input-bordered w-full"
-                />
-              </label>
-              <label className="text-gray-700 flex flex-col">
-                Description:
-                <input
-                  name="description"
-                  defaultValue={editTxn.description}
                   required
                   className="input input-bordered w-full"
                 />

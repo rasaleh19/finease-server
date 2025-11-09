@@ -46,11 +46,16 @@ export default function Home() {
         <p className="tagline text-xl">
           Empower your financial future. Track, plan, and grow!
         </p>
+        <img
+          src="/expense.jpg"
+          alt="Finance Banner"
+          className="w-full max-h-72 object-cover rounded-xl mt-4 shadow"
+        />
       </section>
 
       {/* Overview Section */}
       <section className="overview-section mb-8" data-aos="fade-up">
-        <h2 className="text-2xl font-bold mb-4">Overview</h2>
+        <h2 className="text-2xl font-bold mb-4 text-center">Overview</h2>
         {loading ? (
           <div className="spinner">Loading...</div>
         ) : (
@@ -69,7 +74,9 @@ export default function Home() {
             </div>
             <div className="card balance bg-yellow-100 p-4 rounded-lg shadow">
               <h3 className="font-semibold">Total Balance</h3>
-              <p className="text-lg">${summary.totalBalance}</p>
+              <p className="text-lg">
+                ${Number(summary.totalBalance).toFixed(2)}
+              </p>
             </div>
           </div>
         )}
@@ -77,49 +84,58 @@ export default function Home() {
 
       {/* Budgeting Tips Section */}
       <section className="tips-section mb-8" data-aos="fade-up">
-        <h2 className="text-2xl font-bold mb-4">Budgeting Tips</h2>
-        <ul className="list-disc list-inside">
-          <li>Track your expenses regularly.</li>
-          <li>Set realistic savings goals.</li>
-          <li>Review your budget monthly.</li>
-        </ul>
+        <h2 className="text-2xl font-bold mb-4 text-center">Budgeting Tips</h2>
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div className="bg-base-100 p-6 rounded-xl shadow flex flex-col items-center">
+            <span className="text-4xl mb-2">📊</span>
+            <span className="font-semibold mb-2">Track Your Expenses</span>
+            <span className="text-sm text-gray-500 text-center">
+              Monitor every transaction to understand your spending habits.
+            </span>
+          </div>
+          <div className="bg-base-100 p-6 rounded-xl shadow flex flex-col items-center">
+            <span className="text-4xl mb-2">🎯</span>
+            <span className="font-semibold mb-2">Set Realistic Goals</span>
+            <span className="text-sm text-gray-500 text-center">
+              Define achievable savings and spending targets for each month.
+            </span>
+          </div>
+          <div className="bg-base-100 p-6 rounded-xl shadow flex flex-col items-center">
+            <span className="text-4xl mb-2">🔄</span>
+            <span className="font-semibold mb-2">Review Regularly</span>
+            <span className="text-sm text-gray-500 text-center">
+              Analyze your budget and adjust as needed to stay on track.
+            </span>
+          </div>
+        </div>
       </section>
 
       {/* Financial Planning Section */}
       <section className="planning-section mb-8" data-aos="fade-up">
-        <h2 className="text-2xl font-bold mb-4">
+        <h2 className="text-2xl font-bold mb-4 text-center">
           Why Financial Planning Matters
         </h2>
-        <p>
-          Financial planning helps you manage your money, prepare for
-          emergencies, and achieve your life goals. Start today for a secure
-          tomorrow!
-        </p>
-      </section>
-
-      {/* How It Works Section */}
-      <section className="mb-8 flex flex-col items-center" data-aos="fade-up">
-        <h2 className="text-2xl font-bold mb-4 text-center">How It Works</h2>
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 w-full max-w-4xl">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           <div className="bg-base-100 p-6 rounded-xl shadow flex flex-col items-center">
-            <span className="text-4xl mb-2">🔍</span>
-            <span className="font-semibold mb-1">Browse Skills</span>
+            <span className="text-4xl mb-2">💰</span>
+            <span className="font-semibold mb-2">Manage Your Money</span>
             <span className="text-sm text-gray-500 text-center">
-              Explore a wide range of skills and find what interests you.
+              Financial planning helps you control your income, expenses, and
+              investments.
             </span>
           </div>
           <div className="bg-base-100 p-6 rounded-xl shadow flex flex-col items-center">
-            <span className="text-4xl mb-2">💬</span>
-            <span className="font-semibold mb-1">Connect & Book</span>
+            <span className="text-4xl mb-2">🛡️</span>
+            <span className="font-semibold mb-2">Prepare for Emergencies</span>
             <span className="text-sm text-gray-500 text-center">
-              Contact providers and book sessions easily.
+              Build a safety net for unexpected events and secure your future.
             </span>
           </div>
           <div className="bg-base-100 p-6 rounded-xl shadow flex flex-col items-center">
-            <span className="text-4xl mb-2">🚀</span>
-            <span className="font-semibold mb-1">Learn & Grow</span>
+            <span className="text-4xl mb-2">🏆</span>
+            <span className="font-semibold mb-2">Achieve Life Goals</span>
             <span className="text-sm text-gray-500 text-center">
-              Attend sessions, learn new skills, and track your progress.
+              Set and reach your financial goals for a better tomorrow.
             </span>
           </div>
         </div>
@@ -138,8 +154,8 @@ export default function Home() {
               className="w-16 h-16 rounded-full mb-2"
             />
             <p className="italic mb-2">
-              “SkillSwap helped me learn guitar from scratch. The provider was
-              super friendly and supportive!”
+              “FinEase made budgeting so simple! I can finally track my expenses
+              and save more every month.”
             </p>
             <span className="font-semibold">Ayesha Rahman</span>
           </div>
@@ -150,8 +166,8 @@ export default function Home() {
               className="w-16 h-16 rounded-full mb-2"
             />
             <p className="italic mb-2">
-              “I improved my spoken English and gained confidence for job
-              interviews. Highly recommended!”
+              “With FinEase, I set financial goals and actually achieve them.
+              The reports are super helpful!”
             </p>
             <span className="font-semibold">Imran Hossain</span>
           </div>
@@ -162,8 +178,8 @@ export default function Home() {
               className="w-16 h-16 rounded-full mb-2"
             />
             <p className="italic mb-2">
-              “The Python programming course was easy to follow and very
-              practical. Loved the experience!”
+              “FinEase keeps me motivated to save and invest. I love seeing my
+              progress every month!”
             </p>
             <span className="font-semibold">Tanvir Ahmed</span>
           </div>

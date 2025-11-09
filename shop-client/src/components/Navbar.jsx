@@ -27,7 +27,11 @@ export default function Navbar() {
   return (
     <nav className="navbar bg-base-200 px-4 py-2 flex justify-between items-center shadow">
       <div className="flex items-center gap-2">
-        <img src="/vite.svg" alt="FinEase Logo" className="h-8 w-8" />
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/1041/1041916.png"
+          alt="FinEase Logo"
+          className="h-8 w-8"
+        />
         <span className="font-bold text-xl">FinEase</span>
       </div>
       <div className="flex gap-2 items-center flex-wrap">
