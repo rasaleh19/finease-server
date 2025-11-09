@@ -4,7 +4,7 @@ import { AuthContext } from "../contexts/AuthContext";
 
 const TransactionDetails = () => {
   const { user, loading: userLoading } = useContext(AuthContext);
-  const { id } = useParams();
+  const { id } = useParams(); // now id refers to the _id passed from MyTransactions
   const navigate = useNavigate();
   const [txn, setTxn] = useState(null);
   const [transactions, setTransactions] = useState([]);
@@ -16,26 +16,35 @@ const TransactionDetails = () => {
       navigate("/login");
       return;
     }
+
     async function fetchDetails() {
       try {
+        // Fetch the specific transaction by _id
         const res = await fetch(`http://localhost:3000/transactions/${id}`);
+        if (!res.ok) throw new Error("Transaction not found");
         const data = await res.json();
         setTxn(data);
+
+        // Fetch all transactions for this user (for total per category)
         const resAll = await fetch(
           `http://localhost:3000/transactions?userId=${user.id}`
         );
         const allData = await resAll.json();
         setTransactions(allData);
-      } catch {
+      } catch (err) {
+        console.error(err);
         setTxn(null);
       } finally {
         setLoading(false);
       }
     }
+
     fetchDetails();
   }, [id, user, userLoading, navigate]);
 
-  if (userLoading || loading) return <div className="spinner">Loading...</div>;
+  if (userLoading || loading)
+    return <div className="spinner text-center mt-12">Loading...</div>;
+
   if (!txn)
     return (
       <div className="text-center mt-12 text-lg text-gray-600">
@@ -43,6 +52,7 @@ const TransactionDetails = () => {
       </div>
     );
 
+  // Total amount for this category (among all user's transactions)
   const totalInCategory = transactions
     .filter((t) => t.categoryId === txn.categoryId)
     .reduce((sum, t) => sum + Number(t.amount), 0);

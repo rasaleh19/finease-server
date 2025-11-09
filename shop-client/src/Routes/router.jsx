@@ -9,6 +9,7 @@ import Profile from "../pages/Profile";
 import TransactionDetails from "../pages/TransactionDetails";
 import ProtectedRoute from "../components/ProtectedRoute";
 import AddTransaction from "../pages/AddTransaction";
+import Reports from "../pages/Reports"; // ✅ Add this import
 
 const router = createBrowserRouter([
   {
@@ -27,9 +28,12 @@ const router = createBrowserRouter([
       { path: "my-transactions", element: <MyTransactions /> },
       { path: "transaction/:id", element: <TransactionDetails /> },
       { path: "add-transaction", element: <AddTransaction /> },
+
+      // ✅ PUT REPORTS HERE
+      { path: "reports", element: <Reports /> },
     ],
   },
-  { path: "reports", element: <Reports /> },
+
   { path: "/login", element: <Login /> },
   { path: "/signup", element: <Signup /> },
   { path: "/forgot-password", element: <ForgotPassword /> },

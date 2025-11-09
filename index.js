@@ -3,18 +3,14 @@ const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
 
 const app = express();
-
-// Middleware
 app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// PORT
 const PORT = process.env.PORT || 3000;
 
 const uri =
   "mongodb+srv://rasaleh:2u9EpEfAKjwLMSTo@cluster0.sgftned.mongodb.net/?appName=Cluster0";
-
 const client = new MongoClient(uri, {
   serverApi: {
     version: ServerApiVersion.v1,
@@ -23,7 +19,6 @@ const client = new MongoClient(uri, {
   },
 });
 
-// Root Route
 app.get("/", (req, res) => {
   res.send("Express server with CORS and MongoDB is running!");
 });
@@ -34,9 +29,9 @@ async function run() {
     console.log("✅ Connected to MongoDB");
 
     const db = client.db("usersDB");
-    const usersCollection = db.collection("users"); // fixed to lowercase
+    const usersCollection = db.collection("users");
     const categoriesCollection = db.collection("categories");
-    const transactionsCollection = db.collection("transactions"); // fixed to lowercase
+    const transactionsCollection = db.collection("transactions");
 
     // USERS CRUD
     app.get("/users", async (req, res) => {
@@ -92,7 +87,6 @@ async function run() {
     });
 
     // TRANSACTIONS CRUD
-    // Get all transactions (admin) or filter by userId/email
     app.get("/transactions", async (req, res) => {
       const {
         userId,
@@ -118,11 +112,21 @@ async function run() {
         .toArray();
       res.send(txns);
     });
+
+    // FIXED: Find transaction by id or _id
     app.get("/transactions/:id", async (req, res) => {
       const id = req.params.id;
-      const txn = await transactionsCollection.findOne({ id });
-      res.send(txn);
+      let txn = await transactionsCollection.findOne({ id });
+      if (!txn) {
+        try {
+          txn = await transactionsCollection.findOne({ _id: new ObjectId(id) });
+        } catch (e) {
+          // Invalid ObjectId format, ignore
+        }
+      }
+      res.send(txn || {});
     });
+
     app.post("/transactions", async (req, res) => {
       const txn = req.body;
       const result = await transactionsCollection.insertOne(txn);
@@ -131,12 +135,27 @@ async function run() {
     app.put("/transactions/:id", async (req, res) => {
       const id = req.params.id;
       const update = { $set: req.body };
-      const result = await transactionsCollection.updateOne({ id }, update);
+      let result = await transactionsCollection.updateOne({ id }, update);
+      if (result.matchedCount === 0) {
+        try {
+          result = await transactionsCollection.updateOne(
+            { _id: new ObjectId(id) },
+            update
+          );
+        } catch (e) {}
+      }
       res.send(result);
     });
     app.delete("/transactions/:id", async (req, res) => {
       const id = req.params.id;
-      const result = await transactionsCollection.deleteOne({ id });
+      let result = await transactionsCollection.deleteOne({ id });
+      if (result.deletedCount === 0) {
+        try {
+          result = await transactionsCollection.deleteOne({
+            _id: new ObjectId(id),
+          });
+        } catch (e) {}
+      }
       res.send(result);
     });
 
@@ -176,7 +195,6 @@ async function run() {
 
 run().catch(console.dir());
 
-// Start Server
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });

@@ -14,11 +14,13 @@ const MyTransactions = () => {
   useEffect(() => {
     async function fetchTxns() {
       if (!user) return setLoading(false);
-      // Debug logs to verify user object and fetch URL
+
       console.log("User object:", user);
       console.log("User ID:", user.id);
+
       const fetchUrl = `http://localhost:3000/transactions?userId=${user.id}`;
       console.log("Fetch URL:", fetchUrl);
+
       try {
         const res = await fetch(fetchUrl);
         if (!res.ok) {
@@ -27,7 +29,12 @@ const MyTransactions = () => {
           return;
         }
         const data = await res.json();
-        setTransactions(data);
+        // Always use id, fallback to _id for MongoDB
+        const txns = data.map((t) => ({
+          ...t,
+          id: t.id || t._id?.toString(),
+        }));
+        setTransactions(txns);
       } catch (err) {
         console.log("Fetch catch error:", err);
         setTransactions([]);
@@ -35,12 +42,14 @@ const MyTransactions = () => {
         setLoading(false);
       }
     }
+
     fetchTxns();
   }, [user]);
 
   const handleDelete = async (id) => {
     if (!window.confirm("Are you sure you want to delete this transaction?"))
       return;
+
     try {
       const res = await fetch(`http://localhost:3000/transactions/${id}`, {
         method: "DELETE",
@@ -69,6 +78,7 @@ const MyTransactions = () => {
   const handleUpdate = async (e) => {
     e.preventDefault();
     const form = e.target;
+
     const updated = {
       type: form.type.value,
       categoryId: form.categoryId.value,
@@ -76,6 +86,7 @@ const MyTransactions = () => {
       description: form.description.value,
       date: form.date.value,
     };
+
     try {
       const res = await fetch(
         `http://localhost:3000/transactions/${editTxn.id}`,
@@ -85,6 +96,7 @@ const MyTransactions = () => {
           body: JSON.stringify(updated),
         }
       );
+
       if (res.ok) {
         setTransactions(
           transactions.map((t) =>
@@ -104,6 +116,7 @@ const MyTransactions = () => {
   return (
     <div className="transactions-container max-w-2xl mx-auto p-4 bg-white rounded shadow">
       <h2 className="text-xl font-bold mb-4 text-gray-800">My Transactions</h2>
+
       {loading ? (
         <div className="spinner">Loading...</div>
       ) : (
@@ -131,6 +144,7 @@ const MyTransactions = () => {
                 <div className="text-gray-800">
                   <strong>Date:</strong> {txn.date}
                 </div>
+
                 <div className="txn-actions flex gap-2 mt-2">
                   <button
                     className="btn btn-sm btn-outline"
@@ -138,12 +152,14 @@ const MyTransactions = () => {
                   >
                     Update
                   </button>
+
                   <button
                     className="btn btn-sm btn-error"
                     onClick={() => handleDelete(txn.id)}
                   >
                     Delete
                   </button>
+
                   <button
                     className="btn btn-sm btn-info"
                     onClick={() => navigate(`/transaction/${txn.id}`)}
@@ -157,7 +173,6 @@ const MyTransactions = () => {
         </div>
       )}
 
-      {/* Edit Modal */}
       {showModal && editTxn && (
         <div
           className="modal-overlay fixed inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50"
@@ -170,15 +185,8 @@ const MyTransactions = () => {
             <h3 className="text-lg font-bold mb-4 text-gray-800">
               Edit Transaction
             </h3>
-            <p className="mb-2 text-sm text-gray-600">
-              You can edit/update these fields: <strong>Type</strong>,{" "}
-              <strong>Description</strong>, <strong>Category</strong>,{" "}
-              <strong>Amount</strong>, <strong>Date</strong>
-            </p>
-            <form
-              onSubmit={handleUpdate}
-              className="edit-form grid grid-cols-1 gap-4"
-            >
+
+            <form onSubmit={handleUpdate} className="edit-form grid gap-4">
               <label className="text-gray-700 flex flex-col">
                 Type:
                 <select
@@ -192,6 +200,7 @@ const MyTransactions = () => {
                   <option value="Savings">Savings</option>
                 </select>
               </label>
+
               <label className="text-gray-700 flex flex-col">
                 Description:
                 <input
@@ -201,6 +210,7 @@ const MyTransactions = () => {
                   className="input input-bordered w-full"
                 />
               </label>
+
               <label className="text-gray-700 flex flex-col">
                 Category:
                 <input
@@ -210,6 +220,7 @@ const MyTransactions = () => {
                   className="input input-bordered w-full"
                 />
               </label>
+
               <label className="text-gray-700 flex flex-col">
                 Amount:
                 <input
@@ -220,6 +231,7 @@ const MyTransactions = () => {
                   className="input input-bordered w-full"
                 />
               </label>
+
               <label className="text-gray-700 flex flex-col">
                 Date:
                 <input
@@ -230,7 +242,8 @@ const MyTransactions = () => {
                   className="input input-bordered w-full"
                 />
               </label>
-              <div className="modal-actions flex gap-2 mt-2">
+
+              <div className="modal-actions flex gap-2">
                 <button type="submit" className="btn btn-primary">
                   Update
                 </button>
