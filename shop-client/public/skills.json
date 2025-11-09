@@ -1,0 +1,73 @@
+[
+  {
+    "skillId": 1,
+    "skillName": "Beginner Chess Lessons",
+    "providerName": "Alex Martin",
+    "providerEmail": "alex@skillswap.com",
+    "price": 20,
+    "rating": 4.8,
+    "slotsAvailable": 3,
+    "description": "Acoustic chess classes for complete beginners.",
+    "image": "/chess.jpg",
+    "category": "Games"
+  },
+  {
+    "skillId": 2,
+    "skillName": "Spoken English Practice",
+    "providerName": "Sara Hossain",
+    "providerEmail": "sara@skillswap.com",
+    "price": 10,
+    "rating": 4.6,
+    "slotsAvailable": 5,
+    "description": "Conversational English sessions for non-native speakers.",
+    "image": "/english.jpg"
+  },
+  {
+    "skillId": 3,
+    "skillName": "Python Programming Basics",
+    "providerName": "John Doe",
+    "providerEmail": "john@skillswap.com",
+    "price": 25,
+    "rating": 4.9,
+    "slotsAvailable": 4,
+    "description": "Introductory Python programming course for beginners.",
+    "image": "/python.jpg",
+    "category": "Programming"
+  },
+  {
+    "skillId": 4,
+    "skillName": "Digital Photography",
+    "providerName": "Emily Clark",
+    "providerEmail": "emily@skillswap.com",
+    "price": 30,
+    "rating": 4.7,
+    "slotsAvailable": 2,
+    "description": "Learn the art of photography with hands-on sessions.",
+    "image": "/photography.jpg",
+    "category": "Photography"
+  },
+  {
+    "skillId": 5,
+    "skillName": "Yoga for Beginners",
+    "providerName": "Priya Singh",
+    "providerEmail": "priya@skillswap.com",
+    "price": 15,
+    "rating": 4.5,
+    "slotsAvailable": 6,
+    "description": "Basic yoga sessions to improve flexibility and wellness.",
+    "image": "/yoga.jpg",
+    "category": "Health & Fitness"
+  },
+  {
+    "skillId": 6,
+    "skillName": "French Language Basics",
+    "providerName": "Lucas Bernard",
+    "providerEmail": "lucas@skillswap.com",
+    "price": 18,
+    "rating": 4.6,
+    "slotsAvailable": 4,
+    "description": "Learn conversational French with interactive lessons.",
+    "image": "/french.jpg",
+    "category": "Language"
+  }
+]
