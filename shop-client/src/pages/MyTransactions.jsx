@@ -46,22 +46,46 @@ const MyTransactions = () => {
   }, [user, sortBy]);
 
   const handleDelete = async (id) => {
-    if (!window.confirm("Are you sure you want to delete this transaction?"))
-      return;
-
-    try {
-      const res = await fetch(`http://localhost:3000/transactions/${id}`, {
-        method: "DELETE",
-      });
-      if (res.ok) {
-        setTransactions(transactions.filter((t) => t.id !== id));
-        toast.success("Transaction deleted!");
-      } else {
-        toast.error("Delete failed.");
-      }
-    } catch {
-      toast.error("Delete failed.");
-    }
+    // Use toast for confirmation instead of browser alert
+    toast(
+      (t) => (
+        <span>
+          Are you sure you want to delete this transaction?
+          <br />
+          <button
+            className="btn btn-sm btn-error mt-2"
+            onClick={async () => {
+              toast.dismiss(t.id);
+              try {
+                const res = await fetch(
+                  `http://localhost:3000/transactions/${id}`,
+                  {
+                    method: "DELETE",
+                  }
+                );
+                if (res.ok) {
+                  setTransactions(transactions.filter((txn) => txn.id !== id));
+                  toast.success("Transaction deleted!");
+                } else {
+                  toast.error("Delete failed.");
+                }
+              } catch {
+                toast.error("Delete failed.");
+              }
+            }}
+          >
+            Yes
+          </button>
+          <button
+            className="btn btn-sm btn-outline ml-2 mt-2"
+            onClick={() => toast.dismiss(t.id)}
+          >
+            No
+          </button>
+        </span>
+      ),
+      { duration: 8000 }
+    );
   };
 
   const handleEdit = (txn) => {

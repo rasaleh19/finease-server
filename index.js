@@ -103,15 +103,18 @@ async function run() {
       if (type) query.type = type;
       if (categoryId) query.categoryId = categoryId;
       if (month) query.month = month;
-      let sort = {};
-      // Only allow sorting by allowed fields
-      if (sortBy === "date") sort["date"] = parseInt(sortOrder);
-      else if (sortBy === "amount") sort["amount"] = parseInt(sortOrder);
-      else sort["createdAt"] = -1; // default: newest first
-      const txns = await transactionsCollection
-        .find(query)
-        .sort(sort)
-        .toArray();
+
+      // ✅ Sort directly on "amount" - no conversion needed
+      let sortField = sortBy === "amount" ? "amount" : sortBy || "createdAt";
+      let sortDirection = parseInt(sortOrder);
+
+      let pipeline = [
+        { $match: query },
+
+        { $sort: { [sortField]: sortDirection } },
+      ];
+
+      const txns = await transactionsCollection.aggregate(pipeline).toArray();
       res.send(txns);
     });
 
