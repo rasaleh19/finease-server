@@ -201,5 +201,5 @@ async function run() {
 run().catch(console.dir());
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log(`MongoDB Server running on port ${PORT}`);
 });
