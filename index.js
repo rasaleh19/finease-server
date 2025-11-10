@@ -26,7 +26,7 @@ app.get("/", (req, res) => {
 async function run() {
   try {
     await client.connect();
-    console.log("✅ Connected to MongoDB");
+    console.log("Connected to MongoDB");
 
     const db = client.db("usersDB");
     const usersCollection = db.collection("users");
