@@ -20,7 +20,7 @@ const client = new MongoClient(uri, {
 });
 
 app.get("/", (req, res) => {
-  res.send("Express server with CORS and MongoDB is running!");
+  res.send("Express server alongwith MongoDB is running!");
 });
 
 async function run() {
