@@ -83,6 +83,13 @@ async function run() {
       res.send(result);
     });
 
+    app.put("/users/update-by-email/:email", async (req, res) => {
+      const email = req.params.email;
+      const update = { $set: req.body };
+      const result = await usersCollection.updateOne({ email }, update);
+      res.send(result);
+    });
+
     // CATEGORIES CRUD
     app.get("/categories", async (req, res) => {
       const type = req.query.type;
