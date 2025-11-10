@@ -1,3 +1,4 @@
+require("dotenv").config();
 const express = require("express");
 const cors = require("cors");
 const { MongoClient, ServerApiVersion, ObjectId } = require("mongodb");
@@ -25,8 +26,8 @@ app.get("/", (req, res) => {
 
 async function run() {
   try {
-    await client.connect();
-    console.log("Connected to MongoDB");
+    // await client.connect();
+    // console.log("Connected to MongoDB");
 
     const db = client.db("usersDB");
     const usersCollection = db.collection("users");
@@ -40,20 +41,45 @@ async function run() {
       const users = await usersCollection.find(query).toArray();
       res.send(users);
     });
+
     app.get("/users/:id", async (req, res) => {
       const id = req.params.id;
-      const user = await usersCollection.findOne({ id });
-      res.send(user);
+      let user;
+      try {
+        user = await usersCollection.findOne({ _id: new ObjectId(id) });
+      } catch (e) {
+        user = null;
+      }
+      res.send(user || {});
     });
+
     app.post("/users", async (req, res) => {
       const user = req.body;
+      // Check if user already exists by email
+      const existing = await usersCollection.findOne({ email: user.email });
+      if (existing) {
+        return res.status(409).send({ message: "User already exists" });
+      }
+      // Generate a custom id field (optional, for your UI)
+      const count = await usersCollection.countDocuments();
+      user.id = `user_${String(count + 1).padStart(3, "0")}`;
+      user.createdAt = new Date();
       const result = await usersCollection.insertOne(user);
       res.send(result);
     });
+
     app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
       const update = { $set: req.body };
-      const result = await usersCollection.updateOne({ id }, update);
+      let result;
+      try {
+        result = await usersCollection.updateOne(
+          { _id: new ObjectId(id) },
+          update
+        );
+      } catch (e) {
+        result = { matchedCount: 0 };
+      }
       res.send(result);
     });
 
@@ -66,8 +92,15 @@ async function run() {
     });
     app.get("/categories/:id", async (req, res) => {
       const id = req.params.id;
-      const category = await categoriesCollection.findOne({ id });
-      res.send(category);
+      let category;
+      try {
+        category = await categoriesCollection.findOne({
+          _id: new ObjectId(id),
+        });
+      } catch (e) {
+        category = null;
+      }
+      res.send(category || {});
     });
     app.post("/categories", async (req, res) => {
       const category = req.body;
@@ -77,12 +110,27 @@ async function run() {
     app.put("/categories/:id", async (req, res) => {
       const id = req.params.id;
       const update = { $set: req.body };
-      const result = await categoriesCollection.updateOne({ id }, update);
+      let result;
+      try {
+        result = await categoriesCollection.updateOne(
+          { _id: new ObjectId(id) },
+          update
+        );
+      } catch (e) {
+        result = { matchedCount: 0 };
+      }
       res.send(result);
     });
     app.delete("/categories/:id", async (req, res) => {
       const id = req.params.id;
-      const result = await categoriesCollection.deleteOne({ id });
+      let result;
+      try {
+        result = await categoriesCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+      } catch (e) {
+        result = { deletedCount: 0 };
+      }
       res.send(result);
     });
 
@@ -109,7 +157,6 @@ async function run() {
 
       let pipeline = [
         { $match: query },
-
         { $sort: { [sortField]: sortDirection } },
       ];
 
@@ -119,11 +166,11 @@ async function run() {
 
     app.get("/transactions/:id", async (req, res) => {
       const id = req.params.id;
-      let txn = await transactionsCollection.findOne({ id });
-      if (!txn) {
-        try {
-          txn = await transactionsCollection.findOne({ _id: new ObjectId(id) });
-        } catch (e) {}
+      let txn;
+      try {
+        txn = await transactionsCollection.findOne({ _id: new ObjectId(id) });
+      } catch (e) {
+        txn = null;
       }
       res.send(txn || {});
     });
@@ -136,26 +183,26 @@ async function run() {
     app.put("/transactions/:id", async (req, res) => {
       const id = req.params.id;
       const update = { $set: req.body };
-      let result = await transactionsCollection.updateOne({ id }, update);
-      if (result.matchedCount === 0) {
-        try {
-          result = await transactionsCollection.updateOne(
-            { _id: new ObjectId(id) },
-            update
-          );
-        } catch (e) {}
+      let result;
+      try {
+        result = await transactionsCollection.updateOne(
+          { _id: new ObjectId(id) },
+          update
+        );
+      } catch (e) {
+        result = { matchedCount: 0 };
       }
       res.send(result);
     });
     app.delete("/transactions/:id", async (req, res) => {
       const id = req.params.id;
-      let result = await transactionsCollection.deleteOne({ id });
-      if (result.deletedCount === 0) {
-        try {
-          result = await transactionsCollection.deleteOne({
-            _id: new ObjectId(id),
-          });
-        } catch (e) {}
+      let result;
+      try {
+        result = await transactionsCollection.deleteOne({
+          _id: new ObjectId(id),
+        });
+      } catch (e) {
+        result = { deletedCount: 0 };
       }
       res.send(result);
     });
