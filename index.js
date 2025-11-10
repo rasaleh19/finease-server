@@ -104,7 +104,6 @@ async function run() {
       if (categoryId) query.categoryId = categoryId;
       if (month) query.month = month;
 
-      // ✅ Sort directly on "amount" - no conversion needed
       let sortField = sortBy === "amount" ? "amount" : sortBy || "createdAt";
       let sortDirection = parseInt(sortOrder);
 
@@ -118,16 +117,13 @@ async function run() {
       res.send(txns);
     });
 
-    // Find transaction by id or _id
     app.get("/transactions/:id", async (req, res) => {
       const id = req.params.id;
       let txn = await transactionsCollection.findOne({ id });
       if (!txn) {
         try {
           txn = await transactionsCollection.findOne({ _id: new ObjectId(id) });
-        } catch (e) {
-          // Invalid ObjectId format, ignore
-        }
+        } catch (e) {}
       }
       res.send(txn || {});
     });
